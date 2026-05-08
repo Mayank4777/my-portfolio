@@ -234,16 +234,19 @@
               <div className="lg:col-span-2 glass-panel rounded-3xl p-8 md:p-10 text-lg text-slate-300 leading-relaxed relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-neonCyan/10 rounded-full blur-[50px]"></div>
                 <p className="mb-6">
-                  I am a Bachelor's student at GLS University pursuing IMSCIT, with a strong interest in backend development, workflow automation, and practical software engineering solutions.
+                  I am an IMSCIT student at GLS University with a strong interest in backend development, workflow automation, and practical software engineering.
                 </p>
+
                 <p className="mb-6">
-                  My work focuses on building real-world applications using Python, Flask, JavaScript, APIs, and automation tools. I enjoy exploring how software systems can automate repetitive tasks and improve productivity through integrations and workflow orchestration.
+                  I build applications using Python, Flask, JavaScript, APIs, and automation tools, focusing on creating systems that simplify workflows and improve productivity through integration and automation.
                 </p>
+
                 <p className="mb-6">
-                  Recently, I developed an AI-powered workflow automation system using n8n that integrates services like Gmail, Google Calendar, Google Sheets, and document automation into a unified workflow process. I have also worked on full-stack web applications including a Resume Builder platform and API-driven projects.
+                  My projects include an AI-driven workflow automation system built with n8n, a full-stack Resume Builder platform, and API-based web applications. Through these projects, I have gained hands-on experience in backend development, database integration, and workflow orchestration.
                 </p>
+
                 <p>
-                  Apart from development, I represented GLS University as a National Finalist in Smart India Hackathon (SIH) 2024. I am currently focused on strengthening my backend development skills, API integration knowledge, and preparing for software development opportunities.
+                  Beyond development, I represented GLS University as a National Finalist in Smart India Hackathon (SIH) 2024, collaborating on a sustainable innovation project at the national level.
                 </p>
               </div>
 
@@ -305,7 +308,7 @@
               viewport={{ once: true }}
               className="text-center mb-16"
             >
-              <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">Technical <span className="text-neonCyan">Arsenal</span></h2>
+              <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">Technical <span className="text-neonCyan">Skills</span></h2>
               <div className="w-24 h-1 bg-gradient-to-r from-neonCyan to-neonPurple mx-auto rounded-full"></div>
             </motion.div>
 
@@ -481,16 +484,22 @@
                 </div>
                 <div>
                   <h4 className="text-neonPurple font-semibold text-sm uppercase tracking-wide mb-1">Solution</h4>
-                  <p className="text-slate-300 text-sm leading-relaxed">{project.solution}</p>
+                  <ul className="list-disc pl-4 text-slate-300 text-sm leading-relaxed space-y-1">
+                    {Array.isArray(project.solution) ? project.solution.map((item, i) => <li key={i}>{item}</li>) : <li>{project.solution}</li>}
+                  </ul>
                 </div>
                 <div className="grid md:grid-cols-2 gap-5">
                   <div>
                     <h4 className="text-orange-400 font-semibold text-sm uppercase tracking-wide mb-1">Challenges</h4>
-                    <p className="text-slate-400 text-sm leading-relaxed">{project.challenges}</p>
+                    <ul className="list-disc pl-4 text-slate-400 text-sm leading-relaxed space-y-1">
+                      {Array.isArray(project.challenges) ? project.challenges.map((item, i) => <li key={i}>{item}</li>) : <li>{project.challenges}</li>}
+                    </ul>
                   </div>
                   <div>
                     <h4 className="text-emerald-400 font-semibold text-sm uppercase tracking-wide mb-1">Learning</h4>
-                    <p className="text-slate-400 text-sm leading-relaxed">{project.learning}</p>
+                    <ul className="list-disc pl-4 text-slate-400 text-sm leading-relaxed space-y-1">
+                      {Array.isArray(project.learning) ? project.learning.map((item, i) => <li key={i}>{item}</li>) : <li>{project.learning}</li>}
+                    </ul>
                   </div>
                 </div>
               </div>
@@ -515,9 +524,18 @@
           featured: true,
           technologies: ["Python", "n8n", "Gmail API", "Google Calendar API", "Google Sheets API", "Webhooks"],
           problem: "Repetitive manual tasks across multiple productivity tools (Email, Calendar, Sheets) were causing inefficiencies and wasting valuable time.",
-          solution: "Developed an AI-powered workflow automation system using n8n that integrates multiple productivity services into a single, unified workflow environment.",
-          challenges: "Handling complex API authentication across different Google services and designing a reliable webhook infrastructure that triggers instantly without failure.",
-          learning: "Gained deep understanding of workflow orchestration, API authentication protocols, AI integration in pipelines, and robust webhook handling.",
+          solution: [
+            "Developed an AI-powered workflow automation system using n8n.",
+            "Integrated multiple productivity services into a single, unified workflow environment."
+          ],
+          challenges: [
+            "Handling complex API authentication across different Google services.",
+            "Designing a reliable webhook infrastructure that triggers instantly without failure."
+          ],
+          learning: [
+            "Gained deep understanding of workflow orchestration and AI integration in pipelines.",
+            "Mastered API authentication protocols and robust webhook handling."
+          ],
           imagePlaceholder: "AI Automation Flow Diagram",
           imagePath: "", // Single image fallback
           images: [
@@ -532,35 +550,94 @@
         {
           title: "Resume Builder Web Application",
           featured: false,
-          technologies: ["Python", "Flask", "HTML", "CSS", "JavaScript", "MySQL"],
-          problem: "Users needed a fast, dynamic way to generate professional resumes without dealing with complex formatting software.",
-          solution: "Built a full-stack web application that dynamically generates professional resume content based on user input, working collaboratively in a 3-member team.",
-          challenges: "Ensuring dynamic content generation mapped perfectly to the UI and managing the database connectivity for user sessions securely.",
-          learning: "Improved skills in collaborative team development, full-stack integration (connecting Flask backend with frontend), and dynamic database operations.",
+          technologies: [
+            "Python",
+            "Flask",
+            "HTML",
+            "CSS",
+            "JavaScript",
+            "MySQL"
+          ],
+
+          problem:
+            "Many users struggle to create professional resumes quickly without using complex design tools or manually formatting resume layouts.",
+
+          solution: [
+            "Developed a full-stack Resume Builder web application.",
+            "Implemented dynamic resume generation and demo preview functionality.",
+            "Designed a responsive UI and an admin panel for managing templates.",
+            "Collaborated within a 3-member development team during the project lifecycle."
+          ],
+
+          challenges: [
+            "Synchronizing backend data with frontend previews seamlessly.",
+            "Designing robust database structures for storing user information.",
+            "Maintaining consistent formatting throughout generated resumes."
+          ],
+
+          learning: [
+            "Strengthened skills in full-stack web development and Flask backend integration.",
+            "Gained experience in MySQL database handling and dynamic content rendering.",
+            "Improved collaborative team-based project development skills."
+          ],
+
           imagePlaceholder: "Resume Builder Interface",
+
           imagePath: "",
-          images: [] // Add multiple images here if you have them
+
+          images: [
+            "files/resume-1.jpg",
+            "files/resume-2.jpg",
+            "files/resume-3.jpg",
+            "files/resume-4.jpg",
+          ] // Add multiple images here if you have them
         },
         {
           title: "Weather Forecast Web Application",
           featured: false,
           technologies: ["HTML", "CSS", "JavaScript", "OpenWeatherMap API"],
           problem: "People needed a quick, localized way to check real-time weather conditions without bloated interfaces.",
-          solution: "Created a lightweight web app that fetches real-time weather data (temperature, humidity, wind speed) using the OpenWeatherMap API and displays it dynamically.",
-          challenges: "Handling asynchronous API requests gracefully and displaying loading/error states when the network is slow.",
-          learning: "Mastered frontend API integration using JavaScript `fetch`, handling JSON responses, and updating the DOM dynamically.",
+          solution: [
+            "Created a lightweight web app that fetches real-time weather data.",
+            "Utilized the OpenWeatherMap API to display temperature, humidity, and wind speed dynamically."
+          ],
+          challenges: [
+            "Handling asynchronous API requests gracefully.",
+            "Displaying correct loading and error states when the network is slow or data is unavailable."
+          ],
+          learning: [
+            "Mastered frontend API integration using JavaScript fetch.",
+            "Learned to handle JSON responses and update the DOM dynamically based on data state."
+          ],
           imagePlaceholder: "Weather App Dashboard",
           imagePath: "",
           images: [] // Add multiple images here if you have them
         },
         {
-          title: "Login Validation System",
+          title: "Expense Tracker Web Application",
           featured: false,
-          technologies: ["HTML", "CSS", "JavaScript"],
-          problem: "Web forms lacked immediate, client-side feedback for users entering credentials.",
-          solution: "Developed a basic login validation system using vanilla JavaScript to handle client-side authentication logic and form validation instantly.",
-          challenges: "Writing comprehensive regex patterns to validate different edge cases for emails and passwords.",
-          learning: "Strengthened core JavaScript fundamentals, DOM manipulation, and user input validation techniques.",
+          technologies: [
+            "Python",
+            "Flask",
+            "HTML",
+            "CSS",
+            "MySQL"
+          ],
+          problem:
+            "Managing daily expenses manually made tracking and organizing financial records difficult.",
+          solution: [
+            "Built an Expense Tracker web application using Flask.",
+            "Implemented CRUD operations for managing expense records.",
+            "Created routes for adding, updating, deleting, and viewing expenses."
+          ],
+          challenges: [
+            "Understanding Flask routing and CRUD workflow integration.",
+            "Managing database connectivity and dynamic data handling."
+          ],
+          learning: [
+            "Learned Flask fundamentals, routing, and CRUD operations.",
+            "Gained practical experience with backend development and database integration."
+          ],
           imagePlaceholder: "Login Form UI",
           imagePath: "",
           images: [] // Add multiple images here if you have them
