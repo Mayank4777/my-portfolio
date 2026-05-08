@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mayank Parmar - Python Developer & Backend Enthusiast</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            dark: '#0a0a0a',
+            neonCyan: '#00f0ff',
+            neonPurple: '#b026ff',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          animation: {
+            blob: 'blob 7s infinite',
+          },
+          keyframes: {
+            blob: {
+              '0%': {
+                transform: 'translate(0px, 0px) scale(1)',
+              },
+              '33%': {
+                transform: 'translate(30px, -50px) scale(1.1)',
+              },
+              '66%': {
+                transform: 'translate(-20px, 20px) scale(0.9)',
+              },
+              '100%': {
+                transform: 'translate(0px, 0px) scale(1)',
+              },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- React & ReactDOM -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+  <!-- Babel Standalone (To compile JSX in browser) -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Framer Motion -->
+  <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+
+  <!-- Lucide Icons (We will use SVG strings or basic shapes since the CDN module requires specific handling, but we include it just in case) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body class="bg-dark text-slate-200 font-sans antialiased overflow-x-hidden selection:bg-neonCyan selection:text-dark">
+  <div id="root"></div>
+
+  <!-- App Logic -->
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+    const { motion } = window.Motion;
+
+    // --- Icons (Simple SVGs as React Components) ---
+    const DownloadIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>);
+    const CodeIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>);
+    const ServerIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>);
+    const AutomationIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>);
+    const MailIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>);
+    const GithubIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>);
+    const LinkedinIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>);
+    const MenuIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>);
+    const CloseIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>);
+
+
+    // --- Components ---
+
+    const Navbar = () => {
+      const [isOpen, setIsOpen] = useState(false);
+      const [scrolled, setScrolled] = useState(false);
+
+      useEffect(() => {
+        const handleScroll = () => setScrolled(window.scrollY > 50);
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+      }, []);
+
+      const links = ['About', 'Skills', 'Projects', 'Experience', 'Education', 'Contact'];
+
+      return (
+        <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-dark/80 backdrop-blur-md border-b border-white/10 py-3' : 'bg-transparent py-5'}`}>
+          <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+            <a href="#" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+              <img src="files/profile_image.jpeg" alt="Mayank Parmar" className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover border-2 border-neonCyan/50 shadow-[0_0_10px_rgba(0,240,255,0.3)]" />
+            </a>
+
+            {/* Desktop Nav */}
+            <div className="hidden md:flex gap-8 items-center">
+              {links.map(link => (
+                <a key={link} href={`#${link.toLowerCase()}`} className="text-sm font-medium text-slate-300 hover:text-neonCyan transition-colors">
+                  {link}
+                </a>
+              ))}
+              <div className="flex items-center gap-4">
+                <a href="files/Mayank_Parmar_Resume_v2.pdf" download="Mayank_Parmar_Resume.pdf" className="px-4 py-2 rounded-full border border-neonPurple text-neonPurple hover:bg-neonPurple hover:text-white transition-all font-semibold text-sm flex items-center gap-2">
+                  <DownloadIcon /> Resume
+                </a>
+                <a href="#contact" className="px-5 py-2 rounded-full border border-neonCyan text-neonCyan hover:bg-neonCyan hover:text-dark transition-all font-semibold text-sm">
+                  Hire Me
+                </a>
+              </div>
+            </div>
+
+            {/* Mobile Nav Toggle */}
+            <button className="md:hidden text-white" onClick={() => setIsOpen(!isOpen)}>
+              {isOpen ? <CloseIcon /> : <MenuIcon />}
+            </button>
+          </div>
+
+          {/* Mobile Menu */}
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="md:hidden absolute top-full left-0 w-full bg-dark/95 backdrop-blur-lg border-b border-white/10 py-5 px-6 flex flex-col gap-4"
+            >
+              {links.map(link => (
+                <a key={link} href={`#${link.toLowerCase()}`} onClick={() => setIsOpen(false)} className="text-lg font-medium text-slate-300 hover:text-neonCyan">
+                  {link}
+                </a>
+              ))}
+              <div className="h-px w-full bg-white/10 my-2"></div>
+              <a href="files/Mayank_Parmar_Resume_v2.pdf" download="Mayank_Parmar_Resume.pdf" className="text-lg font-medium text-neonPurple flex items-center gap-2">
+                <DownloadIcon /> Download Resume
+              </a>
+            </motion.div>
+          )}
+        </nav>
+      );
+    };
+
+    const HeroSection = () => {
+      return (
+        <section id="home" className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+          {/* Background Orbs */}
+          <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-neonCyan/20 rounded-full blur-[100px] animate-blob"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-neonPurple/20 rounded-full blur-[120px] animate-blob" style={{ animationDelay: '2s' }}></div>
+
+          <div className="max-w-7xl mx-auto px-6 w-full grid lg:grid-cols-2 gap-12 items-center z-10">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              <div className="inline-block px-4 py-1.5 mb-6 rounded-full glass-panel text-neonCyan font-mono text-sm font-medium border border-neonCyan/30">
+                👋 Welcome to my portfolio
+              </div>
+              <h1 className="text-5xl md:text-7xl font-extrabold text-white leading-tight mb-6 tracking-tight">
+                Hi, I'm <br />
+                <span className="text-gradient">Mayank Parmar</span>
+              </h1>
+              <p className="text-xl md:text-2xl text-slate-400 mb-8 max-w-lg font-light leading-relaxed">
+                Python Developer | <span className="text-white font-medium">Backend</span> & <span className="text-white font-medium">Workflow Automation</span> Enthusiast.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <a href="#projects" className="px-8 py-3 rounded-full bg-neonCyan text-dark font-bold hover:shadow-[0_0_20px_rgba(0,240,255,0.4)] transition-all">
+                  View My Work
+                </a>
+                <a href="#contact" className="px-8 py-3 rounded-full glass-panel text-white font-bold hover:border-neonPurple/50 hover:bg-neonPurple/10 transition-all flex items-center gap-2">
+                  <MailIcon /> Contact Me
+                </a>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="relative hidden lg:block"
+            >
+              <div className="relative w-full aspect-square max-w-md mx-auto">
+                {/* Minimalist Tech Illustration / Placeholder for Image */}
+                <div className="absolute inset-0 rounded-full border-2 border-dashed border-white/20 animate-[spin_20s_linear_infinite]"></div>
+                <div className="absolute inset-4 rounded-full border border-neonCyan/30 animate-[spin_15s_linear_infinite_reverse]"></div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-64 h-64 rounded-full overflow-hidden border-4 border-dark shadow-[0_0_50px_rgba(176,38,255,0.3)] bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center relative">
+                    {/* Replace 'your-profile-image.jpg' with your actual image filename */}
+                    <img src="files/profile_image.jpeg" alt="Mayank Parmar" className="w-full h-full object-cover" />
+                  </div>
+                </div>
+
+                {/* Floating Badges */}
+                <motion.div animate={{ y: [-10, 10, -10] }} transition={{ repeat: Infinity, duration: 4 }} className="absolute top-10 left-0 glass-panel px-4 py-2 rounded-xl flex items-center gap-2">
+                  <CodeIcon /> <span className="font-mono text-sm text-white">Python</span>
+                </motion.div>
+                <motion.div animate={{ y: [10, -10, 10] }} transition={{ repeat: Infinity, duration: 5 }} className="absolute bottom-20 right-0 glass-panel px-4 py-2 rounded-xl flex items-center gap-2">
+                  <AutomationIcon /> <span className="font-mono text-sm text-neonCyan">n8n</span>
+                </motion.div>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+      );
+    };
+
+    const AboutSection = () => {
+      return (
+        <section id="about" className="py-24 relative">
+          <div className="max-w-7xl mx-auto px-6">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-16"
+            >
+              <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">About <span className="text-neonPurple">Me</span></h2>
+              <div className="w-24 h-1 bg-gradient-to-r from-neonCyan to-neonPurple mx-auto rounded-full"></div>
+            </motion.div>
+
+            <div className="grid lg:grid-cols-3 gap-10 max-w-6xl mx-auto">
+              {/* Text Content */}
+              <div className="lg:col-span-2 glass-panel rounded-3xl p-8 md:p-10 text-lg text-slate-300 leading-relaxed relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-neonCyan/10 rounded-full blur-[50px]"></div>
+                <p className="mb-6">
+                  I am a Bachelor's student at GLS University pursuing IMSCIT, with a strong interest in backend development, workflow automation, and practical software engineering solutions.
+                </p>
+                <p className="mb-6">
+                  My work focuses on building real-world applications using Python, Flask, JavaScript, APIs, and automation tools. I enjoy exploring how software systems can automate repetitive tasks and improve productivity through integrations and workflow orchestration.
+                </p>
+                <p className="mb-6">
+                  Recently, I developed an AI-powered workflow automation system using n8n that integrates services like Gmail, Google Calendar, Google Sheets, and document automation into a unified workflow process. I have also worked on full-stack web applications including a Resume Builder platform and API-driven projects.
+                </p>
+                <p>
+                  Apart from development, I represented GLS University as a National Finalist in Smart India Hackathon (SIH) 2024. I am currently focused on strengthening my backend development skills, API integration knowledge, and preparing for software development opportunities.
+                </p>
+              </div>
+
+              {/* Resume Card */}
+              <div className="lg:col-span-1 glass-panel rounded-3xl p-6 flex flex-col items-center justify-between text-center relative overflow-hidden group">
+                <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-neonPurple/10 rounded-full blur-[60px]"></div>
+                <div className="w-full">
+                  <h3 className="text-2xl font-bold text-white mb-2">My Resume</h3>
+                  <p className="text-sm text-slate-400 mb-6">Download for full details</p>
+
+                  {/* Resume Image */}
+                  <a href="files/Mayank_Parmar_Resume_v2.pdf" download="Mayank_Parmar_Resume.pdf" className="w-full aspect-[1/1.4] bg-slate-800 rounded-xl border border-white/10 flex items-center justify-center relative overflow-hidden mb-6 group-hover:border-neonPurple/50 transition-colors block cursor-pointer">
+                    {/* Replace 'your-resume-image.jpg' with your actual image filename */}
+                    <img src="files/Mayank_Resume.jpg" alt="Resume Preview" className="w-full h-full object-cover relative z-20 group-hover:scale-105 transition-transform duration-500" />
+                  </a>
+                </div>
+
+                {/* Replace 'your-resume.pdf' with your actual PDF filename */}
+                <a href="files/Mayank_Parmar_Resume_v2.pdf" download="Mayank_Parmar_Resume.pdf" className="w-full py-3 rounded-xl bg-neonPurple text-white font-bold hover:shadow-[0_0_20px_rgba(176,38,255,0.4)] transition-all flex items-center justify-center gap-2 relative z-10">
+                  <DownloadIcon /> Download PDF
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+    };
+
+    const SkillsSection = () => {
+      const skillCategories = [
+        {
+          title: "Programming Languages",
+          skills: ["Python", "JavaScript", "C", "C++", "Core Java", "PHP", "SQL"],
+          color: "from-blue-500 to-neonCyan"
+        },
+        {
+          title: "Backend & Tools",
+          skills: ["Flask", "REST APIs", "n8n", "Git & GitHub", "Postman", "MySQL", "PL/SQL", "Docker (Beginner)"],
+          color: "from-purple-500 to-neonPurple"
+        },
+        {
+          title: "Frontend Technologies",
+          skills: ["HTML", "CSS", "JavaScript", "Responsive Design"],
+          color: "from-pink-500 to-orange-400"
+        },
+        {
+          title: "Concepts",
+          skills: ["Workflow Automation", "API Integration", "Webhooks", "Backend Development", "Database Management", "Problem Solving"],
+          color: "from-emerald-400 to-teal-500"
+        }
+      ];
+
+      return (
+        <section id="skills" className="py-24 bg-dark/50">
+          <div className="max-w-7xl mx-auto px-6">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-16"
+            >
+              <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">Technical <span className="text-neonCyan">Arsenal</span></h2>
+              <div className="w-24 h-1 bg-gradient-to-r from-neonCyan to-neonPurple mx-auto rounded-full"></div>
+            </motion.div>
+
+            <div className="grid md:grid-cols-2 gap-8">
+              {skillCategories.map((category, idx) => (
+                <motion.div
+                  key={category.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.1 }}
+                  className="glass-panel p-8 rounded-2xl"
+                >
+                  <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                    <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${category.color}`}></div>
+                    {category.title}
+                  </h3>
+                  <div className="flex flex-wrap gap-3">
+                    {category.skills.map(skill => (
+                      <span key={skill} className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:border-white/30 transition-colors cursor-default">
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    };
+
+    const ProjectCard = ({ project }) => {
+      const [currentImg, setCurrentImg] = useState(0);
+      const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+
+      const nextImg = (e) => {
+        if (e) e.stopPropagation();
+        if (project.images && project.images.length > 0) {
+          setCurrentImg((prev) => (prev + 1) % project.images.length);
+        }
+      };
+
+      const prevImg = (e) => {
+        if (e) e.stopPropagation();
+        if (project.images && project.images.length > 0) {
+          setCurrentImg((prev) => (prev - 1 + project.images.length) % project.images.length);
+        }
+      };
+
+      const hasMultipleImages = project.images && project.images.length > 1;
+      const currentImageSrc = project.images && project.images.length > 0 ? project.images[currentImg] : project.imagePath;
+
+      return (
+        <>
+          {/* Full Screen Lightbox Modal */}
+          {isLightboxOpen && currentImageSrc && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-4 backdrop-blur-sm">
+              <button
+                onClick={() => setIsLightboxOpen(false)}
+                className="absolute top-6 right-6 w-12 h-12 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-neonPurple hover:text-white transition-all z-50"
+              >
+                <CloseIcon />
+              </button>
+
+              {/* Lightbox Image */}
+              <div className="relative w-full max-w-6xl aspect-video flex items-center justify-center rounded-xl overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+                <img src={currentImageSrc} alt={`${project.title} Fullscreen`} className="w-full h-full object-contain" />
+              </div>
+
+              {/* Lightbox Controls */}
+              {hasMultipleImages && (
+                <>
+                  <button
+                    onClick={prevImg}
+                    className="absolute left-6 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-black/50 border border-white/20 text-white flex items-center justify-center hover:bg-neonCyan hover:text-dark transition-all z-50"
+                  >
+                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
+                  </button>
+                  <button
+                    onClick={nextImg}
+                    className="absolute right-6 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-black/50 border border-white/20 text-white flex items-center justify-center hover:bg-neonCyan hover:text-dark transition-all z-50"
+                  >
+                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                  </button>
+                  <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white font-mono bg-black/50 px-4 py-2 rounded-full border border-white/10">
+                    {currentImg + 1} / {project.images.length}
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            className="glass-panel rounded-3xl overflow-hidden flex flex-col lg:flex-row group"
+          >
+            {/* Image Container */}
+            {currentImageSrc && (
+              <div
+                onClick={() => setIsLightboxOpen(true)}
+                className="lg:w-2/5 bg-slate-900 border-b lg:border-b-0 lg:border-r border-white/10 relative overflow-hidden min-h-[300px] flex items-center justify-center group/gallery cursor-zoom-in"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-neonCyan/20 to-neonPurple/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"></div>
+
+                {currentImageSrc ? (
+                  <img src={currentImageSrc} alt={project.title} className="absolute inset-0 w-full h-full object-contain z-0 transition-transform duration-700 group-hover/gallery:scale-105" />
+                ) : (
+                  /* Visual Placeholder for User's Project Image (Fallback) */
+                  <div className="flex-1 flex items-center justify-center text-center z-20">
+                    <div>
+                      <svg className="w-16 h-16 text-slate-700 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      <p className="text-slate-500 font-mono text-sm border border-slate-700 px-4 py-2 rounded-lg bg-slate-800/50">
+                        [ Placeholder: {project.imagePlaceholder} ]
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Arrow Buttons & Indicators */}
+                {hasMultipleImages && (
+                  <>
+                    {/* Previous Button */}
+                    <button
+                      onClick={prevImg}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-dark/50 border border-white/10 text-white flex items-center justify-center opacity-0 group-hover/gallery:opacity-100 transition-all hover:bg-neonCyan hover:text-dark z-20"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
+                    </button>
+
+                    {/* Next Button */}
+                    <button
+                      onClick={nextImg}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-dark/50 border border-white/10 text-white flex items-center justify-center opacity-0 group-hover/gallery:opacity-100 transition-all hover:bg-neonCyan hover:text-dark z-20"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+
+                    {/* Dots Indicator */}
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20 opacity-0 group-hover/gallery:opacity-100 transition-opacity duration-300">
+                      {project.images.map((_, idx) => (
+                        <button
+                          key={idx}
+                          onClick={(e) => { e.stopPropagation(); setCurrentImg(idx); }}
+                          className={`h-2 rounded-full transition-all ${idx === currentImg ? 'bg-neonCyan w-5' : 'bg-white/50 w-2 hover:bg-white'}`}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* Content Container */}
+            <div className={`p-8 md:p-10 flex flex-col justify-center ${currentImageSrc ? 'lg:w-3/5' : 'w-full'}`}>
+              {project.featured && (
+                <span className="inline-block px-3 py-1 bg-neonPurple/20 text-neonPurple text-xs font-bold uppercase tracking-wider rounded-md mb-4 border border-neonPurple/30 self-start">
+                  ⭐ Featured Project
+                </span>
+              )}
+              <h3 className="text-2xl md:text-3xl font-bold text-white mb-6 group-hover:text-neonCyan transition-colors">
+                {project.title}
+              </h3>
+
+              <div className="space-y-5">
+                <div>
+                  <h4 className="text-neonCyan font-semibold text-sm uppercase tracking-wide mb-1">Problem</h4>
+                  <p className="text-slate-300 text-sm leading-relaxed">{project.problem}</p>
+                </div>
+                <div>
+                  <h4 className="text-neonPurple font-semibold text-sm uppercase tracking-wide mb-1">Solution</h4>
+                  <p className="text-slate-300 text-sm leading-relaxed">{project.solution}</p>
+                </div>
+                <div className="grid md:grid-cols-2 gap-5">
+                  <div>
+                    <h4 className="text-orange-400 font-semibold text-sm uppercase tracking-wide mb-1">Challenges</h4>
+                    <p className="text-slate-400 text-sm leading-relaxed">{project.challenges}</p>
+                  </div>
+                  <div>
+                    <h4 className="text-emerald-400 font-semibold text-sm uppercase tracking-wide mb-1">Learning</h4>
+                    <p className="text-slate-400 text-sm leading-relaxed">{project.learning}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-8 pt-6 border-t border-white/10 flex flex-wrap gap-2">
+                {project.technologies.map(tech => (
+                  <span key={tech} className="text-xs font-medium text-slate-400 bg-black/40 px-3 py-1 rounded-full border border-white/5">
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        </>
+      );
+    };
+
+    const ProjectsSection = () => {
+      const projects = [
+        {
+          title: "AI Workflow Automation Assistant",
+          featured: true,
+          technologies: ["Python", "n8n", "Gmail API", "Google Calendar API", "Google Sheets API", "Webhooks"],
+          problem: "Repetitive manual tasks across multiple productivity tools (Email, Calendar, Sheets) were causing inefficiencies and wasting valuable time.",
+          solution: "Developed an AI-powered workflow automation system using n8n that integrates multiple productivity services into a single, unified workflow environment.",
+          challenges: "Handling complex API authentication across different Google services and designing a reliable webhook infrastructure that triggers instantly without failure.",
+          learning: "Gained deep understanding of workflow orchestration, API authentication protocols, AI integration in pipelines, and robust webhook handling.",
+          imagePlaceholder: "AI Automation Flow Diagram",
+          imagePath: "", // Single image fallback
+          images: [
+            "files/n8n-workflow.jpg",
+            "files/streamlitui.jpg",
+            "files/streamlitchat.jpg",
+            "files/gmail.jpg",
+            "files/doc created.jpg",
+            "files/calendar event.jpg"
+          ] // Multiple images for gallery
+        },
+        {
+          title: "Resume Builder Web Application",
+          featured: false,
+          technologies: ["Python", "Flask", "HTML", "CSS", "JavaScript", "MySQL"],
+          problem: "Users needed a fast, dynamic way to generate professional resumes without dealing with complex formatting software.",
+          solution: "Built a full-stack web application that dynamically generates professional resume content based on user input, working collaboratively in a 3-member team.",
+          challenges: "Ensuring dynamic content generation mapped perfectly to the UI and managing the database connectivity for user sessions securely.",
+          learning: "Improved skills in collaborative team development, full-stack integration (connecting Flask backend with frontend), and dynamic database operations.",
+          imagePlaceholder: "Resume Builder Interface",
+          imagePath: "",
+          images: [] // Add multiple images here if you have them
+        },
+        {
+          title: "Weather Forecast Web Application",
+          featured: false,
+          technologies: ["HTML", "CSS", "JavaScript", "OpenWeatherMap API"],
+          problem: "People needed a quick, localized way to check real-time weather conditions without bloated interfaces.",
+          solution: "Created a lightweight web app that fetches real-time weather data (temperature, humidity, wind speed) using the OpenWeatherMap API and displays it dynamically.",
+          challenges: "Handling asynchronous API requests gracefully and displaying loading/error states when the network is slow.",
+          learning: "Mastered frontend API integration using JavaScript `fetch`, handling JSON responses, and updating the DOM dynamically.",
+          imagePlaceholder: "Weather App Dashboard",
+          imagePath: "",
+          images: [] // Add multiple images here if you have them
+        },
+        {
+          title: "Login Validation System",
+          featured: false,
+          technologies: ["HTML", "CSS", "JavaScript"],
+          problem: "Web forms lacked immediate, client-side feedback for users entering credentials.",
+          solution: "Developed a basic login validation system using vanilla JavaScript to handle client-side authentication logic and form validation instantly.",
+          challenges: "Writing comprehensive regex patterns to validate different edge cases for emails and passwords.",
+          learning: "Strengthened core JavaScript fundamentals, DOM manipulation, and user input validation techniques.",
+          imagePlaceholder: "Login Form UI",
+          imagePath: "",
+          images: [] // Add multiple images here if you have them
+        }
+      ];
+
+      return (
+        <section id="projects" className="py-24">
+          <div className="max-w-7xl mx-auto px-6">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-16"
+            >
+              <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">Featured <span className="text-neonPurple">Projects</span></h2>
+              <div className="w-24 h-1 bg-gradient-to-r from-neonCyan to-neonPurple mx-auto rounded-full"></div>
+            </motion.div>
+
+            <div className="space-y-16">
+              {projects.map((project, idx) => (
+                <ProjectCard key={project.title} project={project} />
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    };
+
+    const ExperienceSection = () => {
+      const [sihLightboxOpen, setSihLightboxOpen] = useState(false);
+      const [currentSihImg, setCurrentSihImg] = useState(0);
+
+      // Define your SIH gallery images here. 
+      // If the array is empty [], the gallery section will automatically hide.
+      const sihImages = [
+        "files/sih1.jpeg",
+        "files/sih2.jpeg",
+        "files/sih3.jpeg",
+        "files/sih4.jpeg",
+      ];
+
+      return (
+        <>
+          {/* Full Screen Lightbox Modal for SIH */}
+          {sihLightboxOpen && sihImages.length > 0 && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-4 backdrop-blur-sm">
+              <button
+                onClick={() => setSihLightboxOpen(false)}
+                className="absolute top-6 right-6 w-12 h-12 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-neonPurple hover:text-white transition-all z-50"
+              >
+                <CloseIcon />
+              </button>
+
+              {/* Lightbox Image */}
+              <div className="relative w-full max-w-6xl aspect-video flex items-center justify-center rounded-xl overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+                <img src={sihImages[currentSihImg]} alt={`SIH Event ${currentSihImg + 1} Fullscreen`} className="w-full h-full object-contain" />
+              </div>
+
+              {/* Lightbox Controls */}
+              {sihImages.length > 1 && (
+                <>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); setCurrentSihImg((prev) => (prev - 1 + sihImages.length) % sihImages.length); }}
+                    className="absolute left-6 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-black/50 border border-white/20 text-white flex items-center justify-center hover:bg-neonCyan hover:text-dark transition-all z-50"
+                  >
+                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
+                  </button>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); setCurrentSihImg((prev) => (prev + 1) % sihImages.length); }}
+                    className="absolute right-6 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-black/50 border border-white/20 text-white flex items-center justify-center hover:bg-neonCyan hover:text-dark transition-all z-50"
+                  >
+                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                  </button>
+                  <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white font-mono bg-black/50 px-4 py-2 rounded-full border border-white/10">
+                    {currentSihImg + 1} / {sihImages.length}
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+
+          <section id="experience" className="py-24 bg-dark/50">
+            <div className="max-w-7xl mx-auto px-6">
+              <div className="max-w-4xl mx-auto">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="mb-10"
+                >
+                  <h2 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
+                    <ServerIcon /> Experience & <span className="text-neonCyan">Achievements</span>
+                  </h2>
+                </motion.div>
+
+                <div className="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-neonCyan before:via-neonPurple before:to-transparent">
+
+                  {/* Experience Item */}
+                  <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-dark bg-neonCyan text-slate-900 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg>
+                    </div>
+                    <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] glass-panel p-6 rounded-2xl">
+                      <div className="flex flex-col mb-2">
+                        <span className="text-neonCyan font-bold">Project Trainee</span>
+                        <span className="text-slate-400 text-sm">Multiscope Solution</span>
+                      </div>
+                      <p className="text-sm text-slate-300">Collaborated with a 3-member team to design and develop a Resume Builder web application. Focused on backend, frontend integration, and database connectivity. Gained experience in collaborative real-world project workflows.</p>
+                    </div>
+                  </div>
+
+                  {/* Achievement Item 1 */}
+                  <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-dark bg-neonPurple text-slate-900 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                    </div>
+                    <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] glass-panel p-6 rounded-2xl border-neonPurple/20">
+                      <div className="flex flex-col mb-2">
+                        <span className="text-neonPurple font-bold">National Finalist - SIH 2024</span>
+                        <span className="text-slate-400 text-sm">Smart India Hackathon</span>
+                      </div>
+                      <p className={`text-sm text-slate-300 ${sihImages.length > 0 ? 'mb-4' : ''}`}>Represented GLS University at the grand finale in Coimbatore. Developed a sustainable non-electrical solar tracking system solving real-world problems under constraints.</p>
+
+                      {sihImages.length > 0 && (
+                        <div className="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-white/10">
+                          {sihImages.map((img, idx) => (
+                            <div key={idx} onClick={() => { setCurrentSihImg(idx); setSihLightboxOpen(true); }} className="rounded-lg overflow-hidden border border-white/10 aspect-video group/sih relative cursor-pointer">
+                              <div className="absolute inset-0 bg-neonPurple/20 opacity-0 group-hover/sih:opacity-100 transition-opacity duration-300 z-10 pointer-events-none"></div>
+                              <img src={img} alt={`SIH Event ${idx + 1}`} className="w-full h-full object-cover group-hover/sih:scale-110 transition-transform duration-500" />
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Achievement Item 2 & 3 */}
+                  <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-dark bg-slate-700 text-slate-300 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
+                      <span className="text-xs font-bold">🏆</span>
+                    </div>
+                    <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] glass-panel p-6 rounded-2xl">
+                      <div className="flex flex-col gap-4">
+                        <div>
+                          <span className="text-white font-bold block">Swarnim Startup Hackathon</span>
+                          <span className="text-slate-400 text-sm">Participant in innovation-focused competition.</span>
+                        </div>
+                        <div className="w-full h-px bg-white/10"></div>
+                        <div>
+                          <span className="text-white font-bold block">Sardar Patel University Hackathon</span>
+                          <span className="text-slate-400 text-sm">Collaborative problem-solving & development.</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </section>
+        </>
+      );
+    };
+
+    const EducationSection = () => {
+      return (
+        <section id="education" className="py-24 bg-dark/80 border-t border-white/5">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="max-w-4xl mx-auto">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="mb-10"
+              >
+                <h2 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
+                  <CodeIcon /> Education & <span className="text-neonPurple">Strengths</span>
+                </h2>
+              </motion.div>
+
+              <div className="glass-panel p-8 rounded-3xl mb-8 border-t-4 border-t-neonCyan">
+                <h3 className="text-2xl font-bold text-white">GLS University</h3>
+                <p className="text-neonCyan mb-4 font-medium">Bachelor's in IMSCIT • Expected 2026</p>
+
+                <div className="bg-black/30 rounded-xl p-4 mb-6">
+                  <h4 className="text-sm font-semibold text-slate-300 uppercase tracking-wider mb-3">Academic Performance</h4>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                      <span className="text-slate-400">5th Semester</span>
+                      <span className="font-bold text-white text-glow">86.75%</span>
+                    </div>
+                    <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                      <span className="text-slate-400">4th Semester</span>
+                      <span className="font-bold text-white text-glow">90.85%</span>
+                    </div>
+                    <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                      <span className="text-slate-400">3rd Semester</span>
+                      <span className="font-bold text-white text-glow">90.85%</span>
+                    </div>
+                    <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                      <span className="text-slate-400">2nd Semester</span>
+                      <span className="font-bold text-white text-glow">89.14%</span>
+                    </div>
+                    <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                      <span className="text-slate-400">1st Semester</span>
+                      <span className="font-bold text-white text-glow">83.28%</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-300">Higher Secondary (HSC) - Gujarat Board</span>
+                    <span className="font-bold text-white">88.00%</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-300">Secondary School (SSC) - Gujarat Board</span>
+                    <span className="font-bold text-white">91.50%</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Strengths */}
+              <div className="glass-panel p-8 rounded-3xl">
+                <h4 className="text-lg font-bold text-white mb-4">Core Strengths</h4>
+                <div className="flex flex-wrap gap-2">
+                  {['Problem Solving', 'Team Collaboration', 'Quick Learning Ability', 'Adaptability', 'Communication Skills', 'Time Management', 'Self-Motivation', 'Eagerness to Learn'].map(strength => (
+                    <span key={strength} className="px-3 py-1 bg-neonPurple/10 text-neonPurple border border-neonPurple/20 rounded-full text-sm">
+                      {strength}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+    };
+
+    const ContactSection = () => {
+      return (
+        <section id="contact" className="py-24 relative overflow-hidden">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-64 bg-neonCyan/5 rounded-full blur-[100px] pointer-events-none"></div>
+
+          <div className="max-w-4xl mx-auto px-6 text-center z-10 relative">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-5xl font-extrabold text-white mb-6">Let's <span className="text-gradient">Connect</span></h2>
+              <p className="text-xl text-slate-400 mb-12 max-w-2xl mx-auto">
+                I'm currently seeking software development opportunities. Whether you have a question, a project idea, or just want to say hi, I'll try my best to get back to you!
+              </p>
+
+              <div className="flex flex-wrap justify-center gap-6 mb-12">
+                <a href="files/Mayank_Parmar_Resume_v2.pdf" download="Mayank_Parmar_Resume.pdf" className="inline-flex items-center justify-center gap-2 px-10 py-4 bg-neonPurple text-white font-bold rounded-full text-lg hover:shadow-[0_0_30px_rgba(176,38,255,0.4)] transition-all w-full sm:w-auto">
+                  <DownloadIcon /> Download Resume PDF
+                </a>
+              </div>
+
+              <div className="flex flex-col sm:flex-row justify-center gap-6 mb-16">
+                <a href="mailto:mayanknparmar46@gmail.com" className="glass-panel p-6 rounded-2xl flex flex-col items-center gap-3 hover:-translate-y-2 transition-transform group cursor-pointer w-full sm:w-64">
+                  <div className="w-12 h-12 bg-neonCyan/10 rounded-full flex items-center justify-center text-neonCyan group-hover:bg-neonCyan group-hover:text-dark transition-colors">
+                    <MailIcon />
+                  </div>
+                  <span className="text-white font-medium">Email Me</span>
+                  <span className="text-sm text-slate-400 truncate w-full px-2">mayanknparmar46@gmail.com</span>
+                </a>
+
+                <a href="https://github.com/Mayank4777" target="_blank" rel="noopener noreferrer" className="glass-panel p-6 rounded-2xl flex flex-col items-center gap-3 hover:-translate-y-2 transition-transform group cursor-pointer w-full sm:w-64 border-neonPurple/20 hover:border-neonPurple/50">
+                  <div className="w-12 h-12 bg-neonPurple/10 rounded-full flex items-center justify-center text-neonPurple group-hover:bg-neonPurple group-hover:text-dark transition-colors">
+                    <GithubIcon />
+                  </div>
+                  <span className="text-white font-medium">GitHub</span>
+                  <span className="text-sm text-slate-400">Mayank4777</span>
+                </a>
+
+                <a href="https://www.linkedin.com/in/mayank-parmar46" target="_blank" rel="noopener noreferrer" className="glass-panel p-6 rounded-2xl flex flex-col items-center gap-3 hover:-translate-y-2 transition-transform group cursor-pointer w-full sm:w-64 border-blue-500/20 hover:border-blue-500/50">
+                  <div className="w-12 h-12 bg-blue-500/10 rounded-full flex items-center justify-center text-blue-500 group-hover:bg-blue-500 group-hover:text-white transition-colors">
+                    <LinkedinIcon />
+                  </div>
+                  <span className="text-white font-medium">LinkedIn</span>
+                  <span className="text-sm text-slate-400">mayank-parmar46</span>
+                </a>
+              </div>
+
+              <a href="mailto:mayanknparmar46@gmail.com" className="inline-block px-10 py-4 bg-white text-dark font-bold rounded-full text-lg hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] transition-all">
+                Say Hello 👋
+              </a>
+            </motion.div>
+          </div>
+        </section>
+      );
+    };
+
+    const Footer = () => (
+      <footer className="border-t border-white/10 bg-dark py-8 text-center">
+        <p className="text-slate-500 text-sm">
+          © {new Date().getFullYear()} Mayank Parmar. Designed & Built with HTML & CSS.
+        </p>
+      </footer>
+    );
+
+    const App = () => {
+      return (
+        <div className="font-sans text-slate-200">
+          <Navbar />
+          <main>
+            <HeroSection />
+            <AboutSection />
+            <SkillsSection />
+            <ProjectsSection />
+            <ExperienceSection />
+            <EducationSection />
+            <ContactSection />
+          </main>
+          <Footer />
+        </div>
+      );
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+
+  </script>
+</body>
+
+</html>
